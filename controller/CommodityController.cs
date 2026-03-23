@@ -1,5 +1,6 @@
 using EazyTrade.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace controller
 {
@@ -13,19 +14,23 @@ namespace controller
         }
 
         [HttpGet]
-        public IActionResult getAllCommodity()
+        public async Task<IActionResult> getAllCommodity()
         {
-            var commodities = _context.Commodity.ToList();
-            return Ok(commodities);
+            var queries = await _context.Commodity.ToListAsync();
+            if (queries == null || queries.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(queries);
         }
 
         [HttpGet("{id}")]
-        public IActionResult getCommodityById([FromRoute] int id)
+        public async Task<IActionResult> getCommodityById([FromRoute] int id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-                
-            var query = _context.Commodity.Find(id);
+
+            var query = await _context.Commodity.FindAsync(id);
 
             if (query == null)
             {
