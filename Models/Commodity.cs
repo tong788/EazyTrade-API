@@ -4,6 +4,7 @@ namespace EazyTrade.Models
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
+        public DateTime PublishedDate { get; set;}
         public ICollection<Comment> comments{ get; set; } = new List<Comment>();
     }
 

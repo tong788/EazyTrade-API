@@ -1,8 +1,8 @@
 using EazyTrade.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
-namespace controller
+using EazyTrade.Mapper;
+namespace EazyTrade.Controller
 {
     [Route("[controller]")]
     public class CommodityController : ControllerBase
@@ -16,7 +16,7 @@ namespace controller
         [HttpGet]
         public async Task<IActionResult> getAllCommodity()
         {
-            var queries = await _context.Commodity.ToListAsync();
+            var queries = await _context.Commodity.Select(c => c.ToCommodityDto()).ToListAsync();
             if (queries == null || queries.Count == 0)
             {
                 return NotFound();
