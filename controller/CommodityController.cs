@@ -16,7 +16,7 @@ namespace EazyTrade.Controller
         [HttpGet]
         public async Task<IActionResult> getAllCommodity()
         {
-            var queries = await _context.Commodity.Select(c => c.ToCommodityDto()).ToListAsync();
+            var queries = await _context.Commodities.Select(c => c.ToCommodityDto()).ToListAsync();
             if (queries == null || queries.Count == 0)
             {
                 return NotFound();
@@ -30,7 +30,7 @@ namespace EazyTrade.Controller
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var query = await _context.Commodity.FindAsync(id);
+            var query = await _context.Commodities.FindAsync(id);
 
             if (query == null)
             {
