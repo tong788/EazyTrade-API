@@ -18,7 +18,7 @@ public partial class ApplicationDBContext : DbContext
 
     public virtual DbSet<Comment> Comments { get; set; }
 
-asd    public virtual DbSet<Commodity> Commodities { get; set; }
+    public virtual DbSet<Commodity> Commodities { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
