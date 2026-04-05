@@ -13,5 +13,16 @@ namespace EazyTrade.Mapper
                 Name = commodityModel.Name
             };
         }
+
+        public static Commodity ToCommodityFromManipulation(this CommodityForManipulationDto commodityForManipulationDto)
+        {
+            return new Commodity
+            {
+                Name = commodityForManipulationDto.Name,
+                Price = commodityForManipulationDto.Price,
+                PublishDate = commodityForManipulationDto.PublishDate,
+                CancelDate = commodityForManipulationDto.CancelDate
+            };
+        }
     }
 }
