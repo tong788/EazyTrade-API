@@ -42,3 +42,7 @@ TestResults/
 # Environment files (if they contain secrets)
 appsettings.Development.json
 *.env
+
+# app setting
+appsettings.*.json
+appsettings.json
