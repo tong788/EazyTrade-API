@@ -2,6 +2,7 @@ using EazyTrade.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EazyTrade.Mapper;
+using EazyTrade.Dtos;
 namespace EazyTrade.Controller
 {
     [Route("[controller]")]
@@ -14,7 +15,7 @@ namespace EazyTrade.Controller
         }
 
         [HttpGet]
-        public async Task<IActionResult> getAllCommodity()
+        public async Task<IActionResult> GetAllCommodity()
         {
             var queries = await _context.Commodities.Select(c => c.ToCommodityDto()).ToListAsync();
             if (queries == null || queries.Count == 0)
@@ -24,8 +25,8 @@ namespace EazyTrade.Controller
             return Ok(queries);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> getCommodityById([FromRoute] int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetCommodityById([FromRoute] int id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -38,6 +39,60 @@ namespace EazyTrade.Controller
             }
 
             return Ok(query);
+        }
+
+        [HttpPost()]
+        public async Task<IActionResult> CreateCommodity([FromBody] CommodityForManipulationDto payload)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var commodityModel = payload.ToCommodityFromManipulation();
+            await _context.AddAsync(commodityModel);
+            await _context.SaveChangesAsync();
+            return Ok(commodityModel);
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateCommodity([FromRoute] int id, [FromBody] CommodityForManipulationDto payload)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var commodityModel = await _context.Commodities.FirstOrDefaultAsync(c => c.Id == id);
+
+            if (commodityModel == null)
+            {
+                return NotFound();
+            }
+
+            commodityModel.Name = payload.Name;
+            commodityModel.Price = payload.Price;
+            commodityModel.PublishDate = payload.PublishDate;
+            commodityModel.CancelDate = payload.CancelDate;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(commodityModel);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteCommodity([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var commodityModel = await _context.Commodities.FirstOrDefaultAsync(c => c.Id == id);
+
+            if (commodityModel == null)
+            {
+                return NotFound();
+            }
+
+            _context.Remove(commodityModel);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
