@@ -3,21 +3,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EazyTrade.Mapper;
 using EazyTrade.Dtos;
+using EazyTrade.Interfaces;
+using EazyTrade.Repository;
 namespace EazyTrade.Controller
 {
     [Route("[controller]")]
     public class CommodityController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
-        public CommodityController(ApplicationDBContext context)
+        private readonly ICommodityRepository _repository;
+        public CommodityController(ApplicationDBContext context, ICommodityRepository repository)
         {
             _context = context;
+            _repository = repository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllCommodity()
         {
-            var queries = await _context.Commodities.Select(c => c.ToCommodityDto()).ToListAsync();
+            var queries = await _repository.GetAllAsync();
             if (queries == null || queries.Count == 0)
             {
                 return NotFound();
