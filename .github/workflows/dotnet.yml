@@ -5,24 +5,42 @@ name: .NET
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: ["develop"]
   pull_request:
-    branches: [ "develop" ]
+    branches: ["develop", "main"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 10.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      - name: checkout code to GH runner
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.base.ref == 'main'
+
+    steps:
+      - name: Checkout code to GH runner
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Publish
+        run: dotnet publish --configuration Release --output ./publish
+      - name: Deploy
+# to be continue
+      # TODO: Add your deployment step here (e.g., Azure Web App deploy, FTP upload, etc.)
