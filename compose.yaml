@@ -1,0 +1,56 @@
+name: eazytrade-api
+
+services:
+  backend:
+    build: .
+    image: eazytrade-backend
+    container_name: eazytrade-backend
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_URLS: http://+:5000
+      ConnectionStrings__DefaultConnection: Host=database;Port=5432;Database=EazyTrade;Username=supernut_t;Password=29042547
+    ports:
+      - "5000:5000"
+  database:
+    image: postgres:17
+    container_name: eazytrade-database
+    environment:
+      POSTGRES_DB: EazyTrade
+      POSTGRES_USER: supernut_t
+      POSTGRES_PASSWORD: 29042547
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U supernut_t -d EazyTrade"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  db-restore:
+    image: postgres:17
+    profiles: ["tools"]
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      SOURCE_DB_HOST: host.docker.internal
+      SOURCE_DB_PORT: "5432"
+      SOURCE_DB_NAME: EazyTrade
+      SOURCE_DB_USER: supernut_t
+      SOURCE_DB_PASSWORD: 29042547
+      TARGET_DB_HOST: database
+      TARGET_DB_PORT: "5432"
+      TARGET_DB_NAME: EazyTrade
+      TARGET_DB_USER: supernut_t
+      TARGET_DB_PASSWORD: 29042547
+    entrypoint:
+      - /bin/sh
+      - -lc
+      - PGPASSWORD="$$SOURCE_DB_PASSWORD" pg_dump -h "$$SOURCE_DB_HOST" -p "$$SOURCE_DB_PORT" -U "$$SOURCE_DB_USER" -d "$$SOURCE_DB_NAME" --no-owner --no-privileges > /tmp/backup.sql && PGPASSWORD="$$TARGET_DB_PASSWORD" psql -h "$$TARGET_DB_HOST" -p "$$TARGET_DB_PORT" -U "$$TARGET_DB_USER" -d "$$TARGET_DB_NAME" -f /tmp/backup.sql
+
+volumes:
+  postgres_data:
