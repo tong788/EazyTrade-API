@@ -1,4 +1,4 @@
-namespace EazyTrade.Dtos
+namespace EazyTrade.Dto
 {
     public class CommodityForManipulationDto
     {
