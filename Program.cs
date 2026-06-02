@@ -1,6 +1,8 @@
 using EazyTrade.Data;
-using EazyTrade.Interfaces;
+using EazyTrade.Interface;
+using EazyTrade.Interface.Service;
 using EazyTrade.Repository;
+using EazyTrade.Service;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 });
 
 builder.Services.AddScoped<ICommodityRepository, CommodityRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<ICommodityService, CommodityService>();
 
 var app = builder.Build();
 

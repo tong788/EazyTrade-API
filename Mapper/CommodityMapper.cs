@@ -1,4 +1,4 @@
-using EazyTrade.Dtos;
+using EazyTrade.Dto;
 using EazyTrade.Models;
 
 namespace EazyTrade.Mapper
