@@ -1,8 +1,8 @@
 using EazyTrade.Models;
 
-namespace EazyTrade.Dtos
+namespace EazyTrade.Dto
 {
-    public class CommentDto
+    public class CommodityDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
