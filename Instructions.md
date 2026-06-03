@@ -18,3 +18,6 @@ dotnet ef dbcontext scaffold "Host=localhost;Database=YourDbName;Username=YourUs
 
 <!-- when needed to restore db from local to container -->
 docker compose --profile tools run --rm db-restore
+
+<!-- fetch only existed branch in remote (clear the deleted one in remote) -->
+git fetch --prune origin
