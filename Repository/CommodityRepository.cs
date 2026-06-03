@@ -1,5 +1,4 @@
 using EazyTrade.Data;
-using EazyTrade.Dto;
 using EazyTrade.Interface;
 using EazyTrade.Models;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +17,7 @@ namespace EazyTrade.Repository
         {
             return await _context.Commodities.ToListAsync();
         }
-        public async Task<Commodity> GetById(int id)
+        public async Task<Commodity?> GetById(int id)
         {
             return await _context.Commodities.FirstOrDefaultAsync(c => c.Id == id);
         }
