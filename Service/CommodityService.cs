@@ -2,7 +2,6 @@ using EazyTrade.Dto;
 using EazyTrade.Interface;
 using EazyTrade.Interface.Service;
 using EazyTrade.Mapper;
-using EazyTrade.Models;
 
 namespace EazyTrade.Service
 {
@@ -14,37 +13,35 @@ namespace EazyTrade.Service
             _repository = repository;
         }
 
-        public async Task<List<Commodity>> GetCommodities(bool trackChanges)
+        public async Task<List<CommodityDto>> GetCommodities(bool trackChanges)
         {
             var queries = await _repository.GetAll();
-            return queries;
+            return queries.Select(query => query.ToCommodityDto()).ToList();
         }
 
-        public async Task<Commodity> GetCommodityById(int id, bool trackChanges)
+        public async Task<CommodityDto?> GetCommodityById(int id, bool trackChanges)
         {
             var query = await _repository.GetById(id);
-            return query;
-        }
-
-        public async Task CreateCommodity(CommodityForManipulationDto payload)
-        {
-            var entity = new Commodity
+            if (query == null)
             {
-                Name = payload.Name,
-                PublishDate = payload.PublishDate,
-                Price = payload.Price,
-                CancelDate = payload.CancelDate,
-            };
-
-            await _repository.Create(entity);
+                return null;
+            }
+            return query.ToCommodityDto();
         }
 
-        public async Task UpdateCommodity(int id, CommodityForManipulationDto payload)
+        public async Task<CommodityDto> CreateCommodity(CommodityForManipulationDto payload)
+        {
+            var entity = payload.ToCommodityFromManipulation();
+            await _repository.Create(entity);
+            return entity.ToCommodityDto();
+        }
+
+        public async Task<CommodityDto?> UpdateCommodity(int id, CommodityForManipulationDto payload)
         {
             var entity = await _repository.GetById(id);
             if (entity == null)
             {
-                return;
+                return null;
             }
 
             entity.Name = payload.Name;
@@ -53,17 +50,19 @@ namespace EazyTrade.Service
             entity.CancelDate = payload.CancelDate;
 
             await _repository.Update(entity);
+            return entity.ToCommodityDto();
         }
 
-        public async Task DeleteCommodity(int id)
+        public async Task<bool> DeleteCommodity(int id)
         {
             var entity = await _repository.GetById(id);
             if (entity == null)
             {
-                return;
+                return false;
             }
 
             await _repository.Delete(entity);
+            return true;
         }
     }
 }

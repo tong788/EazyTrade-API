@@ -16,8 +16,11 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+// repository scope added
 builder.Services.AddScoped<ICommodityRepository, CommodityRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+
+//service scope added
 builder.Services.AddScoped<ICommodityService, CommodityService>();
 
 var app = builder.Build();

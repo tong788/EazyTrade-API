@@ -1,28 +1,22 @@
-using EazyTrade.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using EazyTrade.Mapper;
 using EazyTrade.Dto;
-using EazyTrade.Interface;
-using EazyTrade.Repository;
 using EazyTrade.Interface.Service;
+
 namespace EazyTrade.Controller
 {
     [Route("[controller]")]
     public class CommodityController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
         private readonly ICommodityService _service;
-        public CommodityController(ApplicationDBContext context, ICommodityService service)
+        public CommodityController(ICommodityService service)
         {
-            _context = context;
             _service = service;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllCommodity()
         {
-            var queries = await _service.GetCommodities(trackChanges:false);
+            var queries = await _service.GetCommodities(trackChanges: false);
             if (queries == null || queries.Count == 0)
             {
                 return NotFound();
@@ -36,11 +30,11 @@ namespace EazyTrade.Controller
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var query = await _context.Commodities.FindAsync(id);
+            var query = await _service.GetCommodityById(id, trackChanges: false);
 
             if (query == null)
             {
-                return NotFound();
+                return NotFound($"The id {id} is not found");
             }
 
             return Ok(query);
@@ -52,10 +46,8 @@ namespace EazyTrade.Controller
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var commodityModel = payload.ToCommodityFromManipulation();
-            await _context.AddAsync(commodityModel);
-            await _context.SaveChangesAsync();
-            return Ok(commodityModel);
+            var result = await _service.CreateCommodity(payload);
+            return Ok(result);
         }
 
         [HttpPut("{id:int}")]
@@ -64,21 +56,13 @@ namespace EazyTrade.Controller
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var commodityModel = await _context.Commodities.FirstOrDefaultAsync(c => c.Id == id);
-
-            if (commodityModel == null)
+            var result = await _service.UpdateCommodity(id, payload);
+            if (result == null)
             {
-                return NotFound();
+                return NotFound($"The id {id} is not found");
             }
 
-            commodityModel.Name = payload.Name;
-            commodityModel.Price = payload.Price;
-            commodityModel.PublishDate = payload.PublishDate;
-            commodityModel.CancelDate = payload.CancelDate;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(commodityModel);
+            return Ok(result);
         }
 
         [HttpDelete("{id:int}")]
@@ -87,15 +71,11 @@ namespace EazyTrade.Controller
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var commodityModel = await _context.Commodities.FirstOrDefaultAsync(c => c.Id == id);
-
-            if (commodityModel == null)
+            var deleted = await _service.DeleteCommodity(id);
+            if (!deleted)
             {
-                return NotFound();
+                return NotFound($"The id {id} is not found");
             }
-
-            _context.Remove(commodityModel);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
