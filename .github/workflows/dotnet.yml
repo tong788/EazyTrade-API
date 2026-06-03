@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: checkout code to GH runner
-      - uses: actions/checkout@v4
+      - name: Checkout code to GH runner
+        uses: actions/checkout@v4
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -34,7 +34,7 @@ jobs:
 
     steps:
       - name: Checkout code to GH runner
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -42,5 +42,5 @@ jobs:
       - name: Publish
         run: dotnet publish --configuration Release --output ./publish
       - name: Deploy
-# to be continue
+        run: echo "Deployment step placeholder - add your deploy action here"
       # TODO: Add your deployment step here (e.g., Azure Web App deploy, FTP upload, etc.)
