@@ -1,13 +1,8 @@
 using EazyTrade.Models;
 
-namespace EazyTrade.Interface
+namespace EazyTrade.Interface.Repository
 {
-    public interface ICommodityRepository
+    public interface ICommodityRepository : IRepositoryBase<Commodity>
     {
-        Task<List<Commodity>> GetAll();
-        Task<Commodity?> GetById(int id);
-        Task Create(Commodity payload);
-        Task Update(Commodity payload);
-        Task Delete(Commodity payload);
     }
 }
