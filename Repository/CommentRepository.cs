@@ -18,5 +18,28 @@ namespace EazyTrade.Repository
             var results = await _context.Comments.ToListAsync();
             return results;
         }
+
+        public async Task<Comment?> GetByIdAsync(int id)
+        {
+            return await _context.Comments.FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task CreateAsync(Comment payload)
+        {
+            await _context.Comments.AddAsync(payload);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(Comment payload)
+        {
+            _context.Comments.Update(payload);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(Comment payload)
+        {
+            _context.Comments.Remove(payload);
+            await _context.SaveChangesAsync();
+        }
     }
 }

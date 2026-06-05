@@ -1,10 +1,8 @@
 namespace EazyTrade.Dto
 {
-    public class CommentDto
+    public class CommentForManipulationDto
     {
-        public int Id { get; set; }
         public string? Detail { get; set; }
         public int CommodityId { get; set; }
-        public DateTime CreateAt { get; set; }
     }
 }

@@ -22,6 +22,7 @@ builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
 //service scope added
 builder.Services.AddScoped<ICommodityService, CommodityService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 
 var app = builder.Build();
 
