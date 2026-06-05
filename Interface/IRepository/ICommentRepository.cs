@@ -1,13 +1,8 @@
 using EazyTrade.Models;
 
-namespace EazyTrade.Interface
+namespace EazyTrade.Interface.Repository
 {
-    public interface ICommentRepository
+    public interface ICommentRepository : IRepositoryBase<Comment>
     {
-        Task<List<Comment>> GetAllAsync();
-        Task<Comment?> GetByIdAsync(int id);
-        Task CreateAsync(Comment payload);
-        Task UpdateAsync(Comment payload);
-        Task DeleteAsync(Comment payload);
     }
 }

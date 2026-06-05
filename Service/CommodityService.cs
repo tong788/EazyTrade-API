@@ -1,5 +1,5 @@
 using EazyTrade.Dto;
-using EazyTrade.Interface;
+using EazyTrade.Interface.Repository;
 using EazyTrade.Interface.Service;
 using EazyTrade.Mapper;
 
@@ -15,13 +15,13 @@ namespace EazyTrade.Service
 
         public async Task<List<CommodityDto>> GetCommodities(bool trackChanges)
         {
-            var queries = await _repository.GetAll();
+            var queries = await _repository.GetAllAsync();
             return queries.Select(query => query.ToCommodityDto()).ToList();
         }
 
         public async Task<CommodityDto?> GetCommodityById(int id, bool trackChanges)
         {
-            var query = await _repository.GetById(id);
+            var query = await _repository.GetByIdAsync(id);
             if (query == null)
             {
                 return null;
@@ -32,13 +32,13 @@ namespace EazyTrade.Service
         public async Task<CommodityDto> CreateCommodity(CommodityForManipulationDto payload)
         {
             var entity = payload.ToCommodityFromManipulation();
-            await _repository.Create(entity);
+            await _repository.CreateAsync(entity);
             return entity.ToCommodityDto();
         }
 
         public async Task<CommodityDto?> UpdateCommodity(int id, CommodityForManipulationDto payload)
         {
-            var entity = await _repository.GetById(id);
+            var entity = await _repository.GetByIdAsync(id);
             if (entity == null)
             {
                 return null;
@@ -48,21 +48,15 @@ namespace EazyTrade.Service
             entity.PublishDate = payload.PublishDate;
             entity.Price = payload.Price;
             entity.CancelDate = payload.CancelDate;
+            entity.UpdateAt = DateTime.UtcNow;
 
-            await _repository.Update(entity);
+            await _repository.UpdateAsync(id, entity);
             return entity.ToCommodityDto();
         }
 
         public async Task<bool> DeleteCommodity(int id)
         {
-            var entity = await _repository.GetById(id);
-            if (entity == null)
-            {
-                return false;
-            }
-
-            await _repository.Delete(entity);
-            return true;
+            return await _repository.DeleteAsync(id);
         }
     }
 }

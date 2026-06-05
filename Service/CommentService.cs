@@ -1,5 +1,5 @@
 using EazyTrade.Dto;
-using EazyTrade.Interface;
+using EazyTrade.Interface.Repository;
 using EazyTrade.Interface.Service;
 using EazyTrade.Mapper;
 using EazyTrade.Models;
@@ -48,20 +48,13 @@ namespace EazyTrade.Service
             entity.CommodityId = payload.CommodityId;
             entity.UpdateAt = DateTime.UtcNow;
 
-            await _repository.UpdateAsync(entity);
+            await _repository.UpdateAsync(id, entity);
             return entity.ToCommentDto();
         }
 
         public async Task<bool> DeleteCommentAsync(int id)
         {
-            var entity = await _repository.GetByIdAsync(id);
-            if (entity == null)
-            {
-                return false;
-            }
-
-            await _repository.DeleteAsync(entity);
-            return true;
+            return await _repository.DeleteAsync(id);
         }
     }
 }

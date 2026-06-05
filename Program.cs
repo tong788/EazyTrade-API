@@ -1,5 +1,5 @@
 using EazyTrade.Data;
-using EazyTrade.Interface;
+using EazyTrade.Interface.Repository;
 using EazyTrade.Interface.Service;
 using EazyTrade.Repository;
 using EazyTrade.Service;
