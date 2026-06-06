@@ -1,7 +1,6 @@
 using EazyTrade.Dto;
 using EazyTrade.Interface.Repository;
 using EazyTrade.Interface.Service;
-using EazyTrade.Mapper;
 using EazyTrade.Models;
 using Mapster;
 

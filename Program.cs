@@ -3,7 +3,7 @@ using EazyTrade.Interface.Repository;
 using EazyTrade.Interface.Service;
 using EazyTrade.Repository;
 using EazyTrade.Service;
-using EazyTrade.Mapper;
+using EazyTrade.Utility.Mapper;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

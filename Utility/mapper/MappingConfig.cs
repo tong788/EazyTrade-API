@@ -2,7 +2,7 @@ using EazyTrade.Dto;
 using EazyTrade.Models;
 using Mapster;
 
-namespace EazyTrade.Mapper
+namespace EazyTrade.Utility.Mapper
 {
     public static class MappingConfiguration
     {
