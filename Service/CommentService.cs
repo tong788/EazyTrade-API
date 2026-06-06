@@ -3,6 +3,7 @@ using EazyTrade.Interface.Repository;
 using EazyTrade.Interface.Service;
 using EazyTrade.Mapper;
 using EazyTrade.Models;
+using Mapster;
 
 namespace EazyTrade.Service
 {
@@ -16,7 +17,7 @@ namespace EazyTrade.Service
         public async Task<List<CommentDto>> GetCommentsAsync()
         {
             var queries = await _repository.GetAllAsync();
-            return queries.Select(c => c.ToCommentDto()).ToList();
+            return queries.Select(c => c.Adapt<CommentDto>()).ToList();
         }
 
         public async Task<CommentDto?> GetCommentByIdAsync(int id)
@@ -26,14 +27,14 @@ namespace EazyTrade.Service
             {
                 return null;
             }
-            return query.ToCommentDto();
+            return query.Adapt<CommentDto>();
         }
 
         public async Task<CommentDto> CreateCommentAsync(CommentForManipulationDto payload)
         {
-            var entity = payload.ToCommentFromManipulation();
+            var entity = payload.Adapt<Comment>();
             await _repository.CreateAsync(entity);
-            return entity.ToCommentDto();
+            return entity.Adapt<CommentDto>();
         }
 
         public async Task<CommentDto?> UpdateCommentAsync(int id, CommentForManipulationDto payload)
@@ -44,12 +45,11 @@ namespace EazyTrade.Service
                 return null;
             }
 
-            entity.Detail = payload.Detail;
-            entity.CommodityId = payload.CommodityId;
+            payload.Adapt(entity);
             entity.UpdateAt = DateTime.UtcNow;
 
             await _repository.UpdateAsync(id, entity);
-            return entity.ToCommentDto();
+            return entity.Adapt<CommentDto>();
         }
 
         public async Task<bool> DeleteCommentAsync(int id)

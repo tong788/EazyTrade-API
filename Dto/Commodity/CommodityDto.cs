@@ -1,4 +1,4 @@
-using EazyTrade.Models;
+using EazyTrade.Dto;
 
 namespace EazyTrade.Dto
 {
@@ -6,6 +6,6 @@ namespace EazyTrade.Dto
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
-        public ICollection<Comment> comments { get; set; } = new List<Comment>();
+        public ICollection<CommentDto> comments { get; set; } = new List<CommentDto>();
     }
 }

@@ -2,6 +2,8 @@ using EazyTrade.Dto;
 using EazyTrade.Interface.Repository;
 using EazyTrade.Interface.Service;
 using EazyTrade.Mapper;
+using EazyTrade.Models;
+using Mapster;
 
 namespace EazyTrade.Service
 {
@@ -16,7 +18,7 @@ namespace EazyTrade.Service
         public async Task<List<CommodityDto>> GetCommodities(bool trackChanges)
         {
             var queries = await _repository.GetAllAsync();
-            return queries.Select(query => query.ToCommodityDto()).ToList();
+            return queries.Select(query => query.Adapt<CommodityDto>()).ToList();
         }
 
         public async Task<CommodityDto?> GetCommodityById(int id, bool trackChanges)
@@ -26,14 +28,14 @@ namespace EazyTrade.Service
             {
                 return null;
             }
-            return query.ToCommodityDto();
+            return query.Adapt<CommodityDto>();
         }
 
         public async Task<CommodityDto> CreateCommodity(CommodityForManipulationDto payload)
         {
-            var entity = payload.ToCommodityFromManipulation();
+            var entity = payload.Adapt<Commodity>();
             await _repository.CreateAsync(entity);
-            return entity.ToCommodityDto();
+            return entity.Adapt<CommodityDto>();
         }
 
         public async Task<CommodityDto?> UpdateCommodity(int id, CommodityForManipulationDto payload)
@@ -44,14 +46,11 @@ namespace EazyTrade.Service
                 return null;
             }
 
-            entity.Name = payload.Name;
-            entity.PublishDate = payload.PublishDate;
-            entity.Price = payload.Price;
-            entity.CancelDate = payload.CancelDate;
+            payload.Adapt(entity);
             entity.UpdateAt = DateTime.UtcNow;
 
             await _repository.UpdateAsync(id, entity);
-            return entity.ToCommodityDto();
+            return entity.Adapt<CommodityDto>();
         }
 
         public async Task<bool> DeleteCommodity(int id)
