@@ -3,6 +3,7 @@ using EazyTrade.Interface.Repository;
 using EazyTrade.Interface.Service;
 using EazyTrade.Repository;
 using EazyTrade.Service;
+using EazyTrade.Mapper;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,9 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+// Configure Mapping
+MappingConfiguration.ConfigureMapping();
 
 // repository scope added
 builder.Services.AddScoped<ICommodityRepository, CommodityRepository>();
