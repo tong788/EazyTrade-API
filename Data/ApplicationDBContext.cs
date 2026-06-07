@@ -7,21 +7,55 @@ namespace EazyTrade.Data;
 
 public partial class ApplicationDBContext : DbContext
 {
-    public ApplicationDBContext()
-    {
-    }
-
     public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options)
         : base(options)
     {
     }
 
+    public virtual DbSet<Account> Accounts { get; set; }
+
     public virtual DbSet<Comment> Comments { get; set; }
 
     public virtual DbSet<Commodity> Commodities { get; set; }
 
+    public virtual DbSet<Store> Stores { get; set; }
+
+    public virtual DbSet<StoreAccount> StoreAccounts { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Account>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("account_pkey");
+
+            entity.ToTable("account");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreateAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("create_at");
+            entity.Property(e => e.CreateBy).HasColumnName("create_by");
+            entity.Property(e => e.Email)
+                .HasMaxLength(80)
+                .HasColumnName("email");
+            entity.Property(e => e.Firstname)
+                .HasMaxLength(50)
+                .HasColumnName("firstname");
+            entity.Property(e => e.Lastname)
+                .HasMaxLength(50)
+                .HasColumnName("lastname");
+            entity.Property(e => e.Password)
+                .HasMaxLength(30)
+                .HasColumnName("password");
+            entity.Property(e => e.UpdateAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("update_at");
+            entity.Property(e => e.UpdateBy).HasColumnName("update_by");
+            entity.Property(e => e.Username)
+                .HasMaxLength(500)
+                .HasColumnName("username");
+        });
+
         modelBuilder.Entity<Comment>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("comment_pkey");
@@ -29,6 +63,7 @@ public partial class ApplicationDBContext : DbContext
             entity.ToTable("comment");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AccountId).HasColumnName("account_id");
             entity.Property(e => e.CancelDate).HasColumnName("cancel_date");
             entity.Property(e => e.CommodityId).HasColumnName("commodity_id");
             entity.Property(e => e.CreateAt)
@@ -42,6 +77,11 @@ public partial class ApplicationDBContext : DbContext
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnName("update_at");
             entity.Property(e => e.UpdateBy).HasColumnName("update_by");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Comments)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("comment_account_fkey");
 
             entity.HasOne(d => d.Commodity).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.CommodityId)
@@ -72,6 +112,56 @@ public partial class ApplicationDBContext : DbContext
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnName("update_at");
             entity.Property(e => e.UpdateBy).HasColumnName("update_by");
+        });
+
+        modelBuilder.Entity<Store>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("store_pkey");
+
+            entity.ToTable("store");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AccountId).HasColumnName("account_id");
+            entity.Property(e => e.CreateAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("create_at");
+            entity.Property(e => e.CreateBy).HasColumnName("create_by");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+            entity.Property(e => e.UpdateAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("update_at");
+            entity.Property(e => e.UpdateBy).HasColumnName("update_by");
+        });
+
+        modelBuilder.Entity<StoreAccount>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("store_account_pkey");
+
+            entity.ToTable("store_account");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AccountId).HasColumnName("account_id");
+            entity.Property(e => e.CreateAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("create_at");
+            entity.Property(e => e.CreateBy).HasColumnName("create_by");
+            entity.Property(e => e.StoreId).HasColumnName("store_id");
+            entity.Property(e => e.UpdateAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("update_at");
+            entity.Property(e => e.UpdateBy).HasColumnName("update_by");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.StoreAccounts)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("store_account_account_fkey");
+
+            entity.HasOne(d => d.Store).WithMany(p => p.StoreAccounts)
+                .HasForeignKey(d => d.StoreId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("store_account_store_fkey");
         });
         modelBuilder.HasSequence("commodity_id_seq");
 
