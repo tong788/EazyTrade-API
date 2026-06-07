@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace EazyTrade.Models;
 
-public partial class Comment
+public partial class StoreAccount
 {
     public int Id { get; set; }
 
-    public string? Detail { get; set; }
+    public int AccountId { get; set; }
 
-    public int CommodityId { get; set; }
+    public int StoreId { get; set; }
 
     public int CreateBy { get; set; }
 
@@ -19,11 +19,7 @@ public partial class Comment
 
     public DateTime UpdateAt { get; set; }
 
-    public DateTime? CancelDate { get; set; }
-
-    public int AccountId { get; set; }
-
     public virtual Account Account { get; set; } = null!;
 
-    public virtual Commodity Commodity { get; set; } = null!;
+    public virtual Store Store { get; set; } = null!;
 }
