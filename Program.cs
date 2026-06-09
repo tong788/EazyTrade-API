@@ -23,10 +23,16 @@ MappingConfiguration.ConfigureMapping();
 // repository scope added
 builder.Services.AddScoped<ICommodityRepository, CommodityRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IStoreRepository, StoreRepository>();
+builder.Services.AddScoped<IStoreAccountRepository, StoreAccountRepository>();
 
 //service scope added
 builder.Services.AddScoped<ICommodityService, CommodityService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IStoreService, StoreService>();
+builder.Services.AddScoped<IStoreAccountService, StoreAccountService>();
 
 var app = builder.Build();
 
