@@ -21,3 +21,6 @@ docker compose --profile tools run --rm db-restore
 
 <!-- fetch only existed branch in remote (clear the deleted one in remote) -->
 git fetch --prune origin
+
+<!-- remove tracked file from git -->
+git rm --cached <filename>
