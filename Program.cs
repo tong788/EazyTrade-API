@@ -1,10 +1,14 @@
+using System.Text;
 using EazyTrade.Data;
 using EazyTrade.Interface.Repository;
 using EazyTrade.Interface.Service;
 using EazyTrade.Repository;
 using EazyTrade.Service;
 using EazyTrade.Utility.Mapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +20,30 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = builder.Configuration["JwtConfig:Issuer"],
+        ValidAudience = builder.Configuration["JwtConfig:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtConfig:SecretKey"]!)),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true
+    };
+});
+builder.Services.AddAuthorization();
+
+// auth service scope added 
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<AuthenticationService>();
 
 // Configure Mapping
 MappingConfiguration.ConfigureMapping();
@@ -35,6 +63,9 @@ builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<IStoreAccountService, StoreAccountService>();
 
 var app = builder.Build();
+
+app.UseAuthorization();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
