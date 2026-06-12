@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+#region Dependency Injection
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -59,9 +60,11 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<IStoreAccountService, StoreAccountService>();
+#endregion
 
 var app = builder.Build();
 
+#region Middleware
 // Enforce HTTPS first for all incoming traffic
 app.UseHttpsRedirection();
 
@@ -76,8 +79,10 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Execute code to controller
+// Execute code to controller (match HTTPS request to the controller, also bind model)
 app.MapControllers();
+#endregion
+
 await app.RunAsync();
 
 
