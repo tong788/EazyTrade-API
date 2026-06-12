@@ -6,7 +6,6 @@ using EazyTrade.Repository;
 using EazyTrade.Service;
 using EazyTrade.Utility.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -43,7 +42,6 @@ builder.Services.AddAuthorization();
 
 // auth service scope added 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<AuthenticationService>();
 
 // Configure Mapping
 MappingConfiguration.ConfigureMapping();
@@ -64,17 +62,21 @@ builder.Services.AddScoped<IStoreAccountService, StoreAccountService>();
 
 var app = builder.Build();
 
-app.UseAuthorization();
-app.UseAuthorization();
+// Enforce HTTPS first for all incoming traffic
+app.UseHttpsRedirection();
 
-// Configure the HTTP request pipeline.
+// Serve API documentation only in development environment
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Security checkpoints
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Execute code to controller
 app.MapControllers();
 await app.RunAsync();
 
