@@ -20,12 +20,24 @@ namespace EazyTrade.Controller
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-                
-            var result = await _service.Login(request.Username, request.Password);
+
+            var result = await _service.Login(request);
             if (result == null)
             {
                 return Unauthorized();
             }
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register(RegisterRequestDto request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _service.Register(request);
+
             return Ok(result);
         }
     }

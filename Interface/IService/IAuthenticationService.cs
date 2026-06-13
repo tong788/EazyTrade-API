@@ -1,7 +1,10 @@
+using EazyTrade.Dto;
+
 namespace EazyTrade.Interface.Service
 {
     public interface IAuthenticationService
     {
-        public Task<string?> Login(string username, string password);
+        public Task<string?> Login(LoginRequestDto request);
+        public Task<AccountDto> Register(RegisterRequestDto request);
     }
 }

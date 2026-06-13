@@ -1,8 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using EazyTrade.Dto;
 using EazyTrade.Interface.Repository;
 using EazyTrade.Interface.Service;
+using EazyTrade.Models;
+using Mapster;
 using Microsoft.IdentityModel.Tokens;
 
 namespace EazyTrade.Service
@@ -19,15 +22,27 @@ namespace EazyTrade.Service
         }
 
 
-        public async Task<string?> Login(string username, string password)
+        public async Task<string?> Login(LoginRequestDto request)
         {
-            var account = await _repository.GetByUsernameAsync(username);
+            var account = await _repository.GetByUsernameAsync(request.Username);
             if (account == null)
             {
                 return null;
             }
-            var token = await GenerateToken(username);
+            if (request.Password != account.Password || request.Username != account.Username)
+            {
+                throw new UnauthorizedAccessException("The username or password is not correct.");
+            }
+            var token = await GenerateToken(request.Username);
             return token;
+        }
+
+        public async Task<AccountDto> Register(RegisterRequestDto request)
+        {
+            var mappedDto = request.Adapt<Account>();
+            var account = await _repository.CreateAsync(mappedDto);
+            var accountDto = account.Adapt<AccountDto>();
+            return accountDto;
         }
 
         private async Task<string> GenerateToken(string username)
