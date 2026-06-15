@@ -53,6 +53,7 @@ builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<IStoreAccountRepository, StoreAccountRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 //service scope added
 builder.Services.AddScoped<ICommodityService, CommodityService>();
@@ -60,6 +61,7 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<IStoreAccountService, StoreAccountService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 #endregion
 
 var app = builder.Build();
