@@ -25,11 +25,11 @@ public partial class Account
 
     public DateTime UpdateAt { get; set; }
 
-    public int? RoleId { get; set; }
+    public int RoleId { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
-    public virtual Role? Role { get; set; }
+    public virtual Role Role { get; set; } = null!;
 
     public virtual ICollection<StoreAccount> StoreAccounts { get; set; } = new List<StoreAccount>();
 }
