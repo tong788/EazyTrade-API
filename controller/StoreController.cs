@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using EazyTrade.Dto;
 using EazyTrade.Interface.Service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EazyTrade.Controller
 {
@@ -14,6 +15,7 @@ namespace EazyTrade.Controller
             _service = service;
         }
 
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllStore()
         {
@@ -26,6 +28,7 @@ namespace EazyTrade.Controller
             return Ok(queries);
         }
 
+        [Authorize(Roles = "admin, vendor")]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetStoreById([FromRoute] int id)
         {

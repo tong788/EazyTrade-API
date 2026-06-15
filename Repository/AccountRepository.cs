@@ -13,7 +13,9 @@ namespace EazyTrade.Repository
         }
         public async Task<Account?> GetByUsernameAsync(string username)
         {
-            var entity = await _context.Accounts.FirstOrDefaultAsync(a => a.Username == username);
+            var entity = await _context.Accounts
+                .Include(a => a.Role)
+                .FirstOrDefaultAsync(a => a.Username == username);
             if(entity == null)
             {
                 return null;

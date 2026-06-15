@@ -33,7 +33,7 @@ namespace EazyTrade.Service
             {
                 throw new UnauthorizedAccessException("The username or password is not correct.");
             }
-            var token = await GenerateToken(request.Username);
+            var token = await GenerateToken(account);
             return token;
         }
 
@@ -45,11 +45,11 @@ namespace EazyTrade.Service
             return accountDto;
         }
 
-        private async Task<string> GenerateToken(string username)
+        private async Task<string> GenerateToken(Account account)
         {
-            var claims = new[]
-           {
-                new Claim(ClaimTypes.Name, username)
+            var claims = new List<Claim>{
+                {new Claim(ClaimTypes.Name, account.Username)},
+                {new Claim(ClaimTypes.Role, account.Role.Name)}
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtConfig:SecretKey"]!));
