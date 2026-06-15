@@ -37,6 +37,12 @@ namespace EazyTrade.Utility.Mapper
             TypeAdapterConfig<StoreAccountForManipulationDto, StoreAccount>.NewConfig()
                 .Map(dest => dest.CreateAt, src => DateTime.UtcNow)
                 .Map(dest => dest.UpdateAt, src => DateTime.UtcNow);
+
+            // Role Mappings
+            TypeAdapterConfig<Role, RoleDto>.NewConfig();
+            TypeAdapterConfig<RoleForManipulationDto, Role>.NewConfig()
+                .Map(dest => dest.CreateAt, src => DateTime.UtcNow)
+                .Map(dest => dest.UpdateAt, src => DateTime.UtcNow);
         }
     }
 }
