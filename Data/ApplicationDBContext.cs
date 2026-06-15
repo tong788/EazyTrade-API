@@ -18,6 +18,8 @@ public partial class ApplicationDBContext : DbContext
 
     public virtual DbSet<Commodity> Commodities { get; set; }
 
+    public virtual DbSet<Role> Roles { get; set; }
+
     public virtual DbSet<Store> Stores { get; set; }
 
     public virtual DbSet<StoreAccount> StoreAccounts { get; set; }
@@ -47,6 +49,7 @@ public partial class ApplicationDBContext : DbContext
             entity.Property(e => e.Password)
                 .HasMaxLength(30)
                 .HasColumnName("password");
+            entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.UpdateAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnName("update_at");
@@ -54,6 +57,10 @@ public partial class ApplicationDBContext : DbContext
             entity.Property(e => e.Username)
                 .HasMaxLength(500)
                 .HasColumnName("username");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
+                .HasForeignKey(d => d.RoleId)
+                .HasConstraintName("account_role_fkey");
         });
 
         modelBuilder.Entity<Comment>(entity =>
@@ -108,6 +115,26 @@ public partial class ApplicationDBContext : DbContext
                 .HasColumnName("name");
             entity.Property(e => e.Price).HasColumnName("price");
             entity.Property(e => e.PublishDate).HasColumnName("publish_date");
+            entity.Property(e => e.UpdateAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("update_at");
+            entity.Property(e => e.UpdateBy).HasColumnName("update_by");
+        });
+
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("role_pkey");
+
+            entity.ToTable("role");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreateAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("create_at");
+            entity.Property(e => e.CreateBy).HasColumnName("create_by");
+            entity.Property(e => e.Name)
+                .HasMaxLength(20)
+                .HasColumnName("name");
             entity.Property(e => e.UpdateAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnName("update_at");
