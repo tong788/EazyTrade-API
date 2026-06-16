@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using EazyTrade.Dto;
 using EazyTrade.Interface.Service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EazyTrade.Controller
 {
@@ -14,6 +15,7 @@ namespace EazyTrade.Controller
             _service = service;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllComment()
         {
@@ -26,6 +28,7 @@ namespace EazyTrade.Controller
             return Ok(queries);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetCommentById([FromRoute] int id)
         {
@@ -42,6 +45,7 @@ namespace EazyTrade.Controller
             return Ok(query);
         }
 
+        [Authorize(Roles = "admin,vendor,client")]
         [HttpPost()]
         public async Task<IActionResult> CreateComment([FromBody] CommentForManipulationDto payload)
         {
@@ -52,6 +56,7 @@ namespace EazyTrade.Controller
             return Ok(result);
         }
 
+        [Authorize(Roles = "admin,vendor,client")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateComment([FromRoute] int id, [FromBody] CommentForManipulationDto payload)
         {
@@ -67,6 +72,7 @@ namespace EazyTrade.Controller
             return Ok(result);
         }
 
+        [Authorize(Roles = "admin,vendor,client")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteComment([FromRoute] int id)
         {

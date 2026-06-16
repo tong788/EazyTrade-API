@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using EazyTrade.Dto;
 using EazyTrade.Interface.Service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EazyTrade.Controller
 {
@@ -13,6 +14,7 @@ namespace EazyTrade.Controller
             _service = service;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllCommodity()
         {
@@ -24,6 +26,7 @@ namespace EazyTrade.Controller
             return Ok(queries);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetCommodityById([FromRoute] int id)
         {
@@ -40,6 +43,7 @@ namespace EazyTrade.Controller
             return Ok(query);
         }
 
+        [Authorize(Roles = "admin,vendor")]
         [HttpPost()]
         public async Task<IActionResult> CreateCommodity([FromBody] CommodityForManipulationDto payload)
         {
@@ -50,6 +54,7 @@ namespace EazyTrade.Controller
             return Ok(result);
         }
 
+        [Authorize(Roles = "admin,vendor")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateCommodity([FromRoute] int id, [FromBody] CommodityForManipulationDto payload)
         {
@@ -65,6 +70,7 @@ namespace EazyTrade.Controller
             return Ok(result);
         }
 
+        [Authorize(Roles = "admin,vendor")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteCommodity([FromRoute] int id)
         {
