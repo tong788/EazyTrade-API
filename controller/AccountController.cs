@@ -45,7 +45,7 @@ namespace EazyTrade.Controller
             return Ok(query);
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "admin,vendor")]
         [HttpPost()]
         public async Task<IActionResult> CreateAccount([FromBody] AccountForManipulationDto payload)
         {
@@ -56,7 +56,7 @@ namespace EazyTrade.Controller
             return Ok(result);
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "admin,vendor,client")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody] AccountForManipulationDto payload)
         {
