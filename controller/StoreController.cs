@@ -45,6 +45,7 @@ namespace EazyTrade.Controller
             return Ok(query);
         }
 
+        [Authorize(Roles = "admin, vendor")]
         [HttpPost()]
         public async Task<IActionResult> CreateStore([FromBody] StoreForManipulationDto payload)
         {
@@ -55,6 +56,7 @@ namespace EazyTrade.Controller
             return Ok(result);
         }
 
+        [Authorize(Roles = "admin, vendor")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateStore([FromRoute] int id, [FromBody] StoreForManipulationDto payload)
         {
@@ -70,6 +72,7 @@ namespace EazyTrade.Controller
             return Ok(result);
         }
 
+        [Authorize(Roles = "admin, vendor")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteStore([FromRoute] int id)
         {

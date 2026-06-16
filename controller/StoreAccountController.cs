@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using EazyTrade.Dto;
 using EazyTrade.Interface.Service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EazyTrade.Controller
 {
@@ -14,6 +15,7 @@ namespace EazyTrade.Controller
             _service = service;
         }
 
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllStoreAccount()
         {
@@ -26,6 +28,7 @@ namespace EazyTrade.Controller
             return Ok(queries);
         }
 
+        [Authorize(Roles = "admin, vendor")]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetStoreAccountById([FromRoute] int id)
         {
@@ -42,6 +45,7 @@ namespace EazyTrade.Controller
             return Ok(query);
         }
 
+        [Authorize(Roles = "admin, vendor")]
         [HttpPost()]
         public async Task<IActionResult> CreateStoreAccount([FromBody] StoreAccountForManipulationDto payload)
         {
@@ -52,6 +56,7 @@ namespace EazyTrade.Controller
             return Ok(result);
         }
 
+        [Authorize(Roles = "admin, vendor")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateStoreAccount([FromRoute] int id, [FromBody] StoreAccountForManipulationDto payload)
         {
@@ -67,6 +72,7 @@ namespace EazyTrade.Controller
             return Ok(result);
         }
 
+        [Authorize(Roles = "admin, vendor")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteStoreAccount([FromRoute] int id)
         {
