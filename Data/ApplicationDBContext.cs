@@ -103,10 +103,15 @@ public partial class ApplicationDBContext : DbContext
 
             entity.ToTable("commodity");
 
+            entity.HasIndex(e => e.Code, "commodity_code_key").IsUnique();
+
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("nextval('commodity_id_seq1'::regclass)")
                 .HasColumnName("id");
             entity.Property(e => e.CancelDate).HasColumnName("cancel_date");
+            entity.Property(e => e.Code)
+                .HasMaxLength(30)
+                .HasColumnName("code");
             entity.Property(e => e.CreateAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnName("create_at");
@@ -116,10 +121,16 @@ public partial class ApplicationDBContext : DbContext
                 .HasColumnName("name");
             entity.Property(e => e.Price).HasColumnName("price");
             entity.Property(e => e.PublishDate).HasColumnName("publish_date");
+            entity.Property(e => e.StoreId).HasColumnName("store_id");
             entity.Property(e => e.UpdateAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnName("update_at");
             entity.Property(e => e.UpdateBy).HasColumnName("update_by");
+
+            entity.HasOne(d => d.Store).WithMany(p => p.Commodities)
+                .HasForeignKey(d => d.StoreId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("commodity_store_fkey");
         });
 
         modelBuilder.Entity<Role>(entity =>

@@ -19,5 +19,7 @@ public partial class Store
 
     public DateTime UpdateAt { get; set; }
 
+    public virtual ICollection<Commodity> Commodities { get; set; } = new List<Commodity>();
+
     public virtual ICollection<StoreAccount> StoreAccounts { get; set; } = new List<StoreAccount>();
 }
