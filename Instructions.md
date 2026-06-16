@@ -5,7 +5,7 @@
 
 <!-- scaffold -->
 
-dotnet ef dbcontext scaffold "Host=localhost;Database=YourDbName;Username=YourUser;Password=YourPassword" Npgsql.EntityFrameworkCore.PostgreSQL --output-dir Models --context-dir Data --context ApplicationDBContext --force --no-onconfiguring
+dotnet ef dbcontext scaffold "Host=localhost;Database=EazyTrade;Username=YourUser;Password=YourPassword" Npgsql.EntityFrameworkCore.PostgreSQL --output-dir Models --context-dir Data --context ApplicationDBContext --force --no-onconfiguring
 
 <!-- docker build image -->
 
