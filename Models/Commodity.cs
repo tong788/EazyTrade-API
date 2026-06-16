@@ -23,5 +23,11 @@ public partial class Commodity
 
     public int? Price { get; set; }
 
+    public string Code { get; set; } = null!;
+
+    public int StoreId { get; set; }
+
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
+    public virtual Store Store { get; set; } = null!;
 }
