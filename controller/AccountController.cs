@@ -58,7 +58,7 @@ namespace EazyTrade.Controller
 
         [Authorize(Roles = "admin,vendor,client")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody] AccountForManipulationDto payload)
+        public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromForm] AccountForManipulationDto payload)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
