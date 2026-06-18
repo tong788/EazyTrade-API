@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using EazyTrade.Models;
 using Microsoft.EntityFrameworkCore;
@@ -137,9 +137,8 @@ public partial class ApplicationDBContext : DbContext
 
         modelBuilder.Entity<ImageFile>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("image_file");
+            entity.HasKey(e => e.Id).HasName("image_file_pkey");
+            entity.ToTable("image_file");
 
             entity.Property(e => e.CreateAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")

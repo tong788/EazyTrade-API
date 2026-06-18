@@ -9,9 +9,14 @@ namespace EazyTrade.Service
     public class AccountService : IAccountService
     {
         private readonly IAccountRepository _repository;
-        public AccountService(IAccountRepository repository)
+        private readonly IStorageService _storageService;
+
+        public AccountService(
+            IAccountRepository repository,
+            IStorageService storageService)
         {
             _repository = repository;
+            _storageService = storageService;
         }
 
         public async Task<List<AccountDto>> GetAccountsAsync()
@@ -47,6 +52,11 @@ namespace EazyTrade.Service
 
             payload.Adapt(entity);
             entity.UpdateAt = DateTime.UtcNow;
+
+            if (payload.Image != null && payload.Image.Length > 0)
+            {
+                await _storageService.UploadAndSaveImageAsync(payload.Image, id, "Account", id);
+            }
 
             await _repository.UpdateAsync(id, entity);
             return entity.Adapt<AccountDto>();

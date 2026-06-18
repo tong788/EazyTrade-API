@@ -1,4 +1,5 @@
 using System.Text;
+using EazyTrade.ConfigurationModels;
 using EazyTrade.Data;
 using EazyTrade.Interface.Repository;
 using EazyTrade.Interface.Service;
@@ -68,6 +69,7 @@ MappingConfiguration.ConfigureMapping();
 builder.Services.AddScoped<ICommodityRepository, CommodityRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IImageFileRepository, ImageFileRepository>();
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<IStoreAccountRepository, StoreAccountRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
@@ -79,7 +81,10 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<IStoreAccountService, StoreAccountService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IStorageService, StorageService>();
 #endregion
+
+builder.Services.Configure<AwsS3Configuration>(builder.Configuration.GetSection(AwsS3Configuration.Section));
 
 var app = builder.Build();
 
