@@ -18,6 +18,8 @@ public partial class ApplicationDBContext : DbContext
 
     public virtual DbSet<Commodity> Commodities { get; set; }
 
+    public virtual DbSet<ImageFile> ImageFiles { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<Store> Stores { get; set; }
@@ -131,6 +133,39 @@ public partial class ApplicationDBContext : DbContext
                 .HasForeignKey(d => d.StoreId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("commodity_store_fkey");
+        });
+
+        modelBuilder.Entity<ImageFile>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("image_file");
+
+            entity.Property(e => e.CreateAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("create_at");
+            entity.Property(e => e.CreateBy).HasColumnName("create_by");
+            entity.Property(e => e.FileName)
+                .HasMaxLength(150)
+                .HasColumnName("file_name");
+            entity.Property(e => e.FileSize).HasColumnName("file_size");
+            entity.Property(e => e.FileUrl)
+                .HasMaxLength(250)
+                .HasColumnName("file_url");
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("id");
+            entity.Property(e => e.MimeType)
+                .HasMaxLength(50)
+                .HasColumnName("mime_type");
+            entity.Property(e => e.ReferenceId).HasColumnName("reference_id");
+            entity.Property(e => e.ReferenceType)
+                .HasMaxLength(50)
+                .HasColumnName("reference_type");
+            entity.Property(e => e.UpdateAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("update_at");
+            entity.Property(e => e.UpdateBy).HasColumnName("update_by");
         });
 
         modelBuilder.Entity<Role>(entity =>
