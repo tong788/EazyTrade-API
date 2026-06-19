@@ -10,13 +10,16 @@ namespace EazyTrade.Service
     {
         private readonly IAccountRepository _repository;
         private readonly IStorageService _storageService;
+        private readonly IImageFileRepository _imageFileRepository;
 
         public AccountService(
             IAccountRepository repository,
-            IStorageService storageService)
+            IStorageService storageService,
+            IImageFileRepository imageFileRepository)
         {
             _repository = repository;
             _storageService = storageService;
+            _imageFileRepository = imageFileRepository;
         }
 
         public async Task<List<AccountDto>> GetAccountsAsync()
@@ -32,7 +35,13 @@ namespace EazyTrade.Service
             {
                 return null;
             }
-            return query.Adapt<AccountDto>();
+            var accountDto = query.Adapt<AccountDto>();
+            var imageFile = await _imageFileRepository.GetImageByReferenceAsync(id, "Account");
+            if (imageFile != null)
+            {
+                accountDto.ImageUrl = imageFile.FileUrl;
+            }
+            return accountDto;
         }
 
         public async Task<AccountDto> CreateAccountAsync(AccountForManipulationDto payload)
