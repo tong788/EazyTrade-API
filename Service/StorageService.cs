@@ -1,6 +1,5 @@
 using Amazon.S3;
 using Amazon.S3.Model;
-using Amazon.S3.Util;
 using EazyTrade.ConfigurationModels;
 using EazyTrade.Interface.Service;
 using EazyTrade.Interface.Repository;
@@ -24,24 +23,29 @@ namespace EazyTrade.Service
         public async Task<string> UploadFile(IFormFile file)
         {
             AmazonS3Client client;
+
             if (!string.IsNullOrEmpty(_awsS3Configuration.Region))
             {
                 var region = Amazon.RegionEndpoint.GetBySystemName(_awsS3Configuration.Region);
-                client = new AmazonS3Client(region);
+                if (!string.IsNullOrEmpty(_awsS3Configuration.AccessKey) && !string.IsNullOrEmpty(_awsS3Configuration.SecretKey))
+                {
+                    client = new AmazonS3Client(_awsS3Configuration.AccessKey, _awsS3Configuration.SecretKey, region);
+                }
+                else
+                {
+                    client = new AmazonS3Client(region);
+                }
             }
             else
             {
-                client = new AmazonS3Client();
-            }
-            var isBucketExist = await AmazonS3Util.DoesS3BucketExistV2Async(client, _awsS3Configuration.BucketName);
-            if (!isBucketExist)
-            {
-                var bucketRequest = new PutBucketRequest()
+                if (!string.IsNullOrEmpty(_awsS3Configuration.AccessKey) && !string.IsNullOrEmpty(_awsS3Configuration.SecretKey))
                 {
-                    BucketName = _awsS3Configuration.BucketName,
-                    UseClientRegion = true,
-                };
-                await client.PutBucketAsync(bucketRequest);
+                    client = new AmazonS3Client(_awsS3Configuration.AccessKey, _awsS3Configuration.SecretKey);
+                }
+                else
+                {
+                    client = new AmazonS3Client();
+                }
             }
             using var stream = file.OpenReadStream();
             var key = $"{DateTime.Now:yyyyMMddhhmmss}{file.FileName}";
