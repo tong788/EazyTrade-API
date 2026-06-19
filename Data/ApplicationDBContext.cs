@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using EazyTrade.Models;
 using Microsoft.EntityFrameworkCore;
@@ -138,8 +138,10 @@ public partial class ApplicationDBContext : DbContext
         modelBuilder.Entity<ImageFile>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("image_file_pkey");
+
             entity.ToTable("image_file");
 
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreateAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnName("create_at");
@@ -151,9 +153,6 @@ public partial class ApplicationDBContext : DbContext
             entity.Property(e => e.FileUrl)
                 .HasMaxLength(250)
                 .HasColumnName("file_url");
-            entity.Property(e => e.Id)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("id");
             entity.Property(e => e.MimeType)
                 .HasMaxLength(50)
                 .HasColumnName("mime_type");
