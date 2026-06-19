@@ -24,29 +24,9 @@ namespace EazyTrade.Service
         {
             AmazonS3Client client;
 
-            if (!string.IsNullOrEmpty(_awsS3Configuration.Region))
-            {
-                var region = Amazon.RegionEndpoint.GetBySystemName(_awsS3Configuration.Region);
-                if (!string.IsNullOrEmpty(_awsS3Configuration.AccessKey) && !string.IsNullOrEmpty(_awsS3Configuration.SecretKey))
-                {
-                    client = new AmazonS3Client(_awsS3Configuration.AccessKey, _awsS3Configuration.SecretKey, region);
-                }
-                else
-                {
-                    client = new AmazonS3Client(region);
-                }
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(_awsS3Configuration.AccessKey) && !string.IsNullOrEmpty(_awsS3Configuration.SecretKey))
-                {
-                    client = new AmazonS3Client(_awsS3Configuration.AccessKey, _awsS3Configuration.SecretKey);
-                }
-                else
-                {
-                    client = new AmazonS3Client();
-                }
-            }
+            var region = Amazon.RegionEndpoint.GetBySystemName(_awsS3Configuration.Region);
+            client = new AmazonS3Client(_awsS3Configuration.AccessKey, _awsS3Configuration.SecretKey, region);
+
             using var stream = file.OpenReadStream();
             var key = $"{DateTime.Now:yyyyMMddhhmmss}{file.FileName}";
             var putObjectRequest = new PutObjectRequest()
