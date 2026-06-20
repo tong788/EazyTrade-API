@@ -90,11 +90,8 @@ builder.Services.Configure<AwsS3Configuration>(builder.Configuration.GetSection(
 var app = builder.Build();
 
 #region Middleware
-// Enforce HTTPS first for all incoming traffic (disabled in development/Docker testing)
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
+// Enforce HTTPS first for all incoming traffic
+app.UseHttpsRedirection();
 
 // Serve API documentation only in development environment
 if (app.Environment.IsDevelopment())
