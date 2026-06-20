@@ -46,3 +46,8 @@ appsettings.Development.json
 # app setting
 appsettings.*.json
 appsettings.json
+
+# SonarQube / SonarScanner
+.sonarqube/
+.sonar/
+.scannerwork/

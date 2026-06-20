@@ -41,3 +41,8 @@ TestResults/
 
 # Environment files (if they contain secrets)
 *.env
+
+# SonarQube / SonarScanner
+.sonarqube/
+.sonar/
+.scannerwork/
