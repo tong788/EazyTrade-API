@@ -82,9 +82,12 @@ builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<IStoreAccountService, StoreAccountService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IStorageService, StorageService>();
+
+// map setting from appsettings.json to Configuration model
+builder.Services.Configure<AwsS3Configuration>(builder.Configuration.GetSection(AwsS3Configuration.Section));
 #endregion
 
-builder.Services.Configure<AwsS3Configuration>(builder.Configuration.GetSection(AwsS3Configuration.Section));
+
 
 var app = builder.Build();
 
