@@ -87,8 +87,6 @@ builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.Configure<AwsS3Configuration>(builder.Configuration.GetSection(AwsS3Configuration.Section));
 #endregion
 
-
-
 var app = builder.Build();
 
 #region Middleware
