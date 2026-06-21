@@ -5,6 +5,10 @@ on:
   push:
     branches: ["develop", "main"]
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -25,8 +29,32 @@ jobs:
           # Insert staging publish/deploy commands here, e.g.:
           # dotnet publish -c Release
 
-      # Deploy to Production if merged into main
-      - name: Deploy to Production
+      # --- Production Deploy (Build & Push Docker Image to GHCR) ---
+
+      - name: Log in to GitHub Container Registry
         if: github.ref == 'refs/heads/main'
-        run: |
-          echo "Building and deploying to Production environment..."
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        if: github.ref == 'refs/heads/main'
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value=latest
+            type=sha,format=short
+
+      - name: Build and push Docker image
+        if: github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
