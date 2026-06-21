@@ -1,0 +1,33 @@
+name: Continuous Deployment                                                                                                           
+                                                                                                                                          
+on:              
+  # push only include merge pull request since there are already branch rule to prevent direct push to 'main' and 'develop' branch
+  push:                                                                                                                               
+    branches: ["develop", "main"]                                                                                                     
+                                                                                                                                          
+jobs:                                                                                                                                 
+  deploy:                                                                                                                             
+    runs-on: ubuntu-latest                                                                                                            
+    steps:                                                                                                                            
+      - name: Checkout code to GH runner                                                                                                          
+        uses: actions/checkout@v4                                                                                                     
+                                                                                                                                          
+      - name: Setup .NET                                                                                                              
+        uses: actions/setup-dotnet@v4                                                                                                 
+        with:                                                                                                                         
+              dotnet-version: 10.0.x                                                                                                      
+                                                                                                                                          
+      # Deploy to Staging if merged into develop                                                                                      
+      - name: Deploy to Staging                                                                                                       
+        if: github.ref == 'refs/heads/develop'                                                                                        
+        run: |                                                                                                                        
+            echo "Building and deploying to Staging environment..."                                                                     
+            # Insert staging publish/deploy commands here, e.g.:                                                                        
+            # dotnet publish -c Release                                                                                                 
+                                                                                                                                          
+      # Deploy to Production if merged into main                                                                                      
+      - name: Deploy to Production                                                                                                    
+          if: github.ref == 'refs/heads/main'                                                                                           
+          run: |                                                                                                                        
+            echo "Building and deploying to Production environment..."                                                                  
+            # Insert production publish/deploy commands here 
