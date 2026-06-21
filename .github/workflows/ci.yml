@@ -1,0 +1,29 @@
+name: .Net continuous integration
+
+on:
+  pull_request:
+    branches: ["develop", "main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check branches
+        run: |
+          if [[ "${GITHUB_BASE_REF}" == "main" && "${GITHUB_HEAD_REF}" != "develop" ]]; then
+            echo "Error: Pull request into 'main' branch must come from 'develop' branch only"
+            exit 1
+          fi
+      - name: Checkout code to GH runner
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
