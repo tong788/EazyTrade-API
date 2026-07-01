@@ -39,7 +39,7 @@ builder.Services.AddCors(options =>
  {
      options.AddDefaultPolicy(policy =>
      {
-         policy.WithOrigins("http://localhost:3000") // Allow specific origin  
+         policy.WithOrigins(builder.Configuration["CorsPolicies:AllowedOrigin"]!) // Allow specific origin  
              .WithMethods("GET", "POST", "PUT", "DELETE")     // Allow specific methods  
              .WithHeaders("Content-Type", "Authorization"); // Allow specific headers  
      }
