@@ -33,6 +33,19 @@ builder.Services.AddSwaggerGen(options =>
         [new OpenApiSecuritySchemeReference("Bearer", document)] = new List<string>()
     });
 });
+
+// Add CORS policy -> to allow request from frontend
+builder.Services.AddCors(options =>
+ {
+     options.AddDefaultPolicy(policy =>
+     {
+         policy.WithOrigins("http://localhost:3000") // Allow specific origin  
+             .WithMethods("GET", "POST", "PUT", "DELETE")     // Allow specific methods  
+             .WithHeaders("Content-Type", "Authorization"); // Allow specific headers  
+     }
+     );
+ });
+
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
@@ -99,6 +112,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(); // Uses the default policy  
 
 // Security checkpoints
 app.UseAuthentication();
