@@ -18,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "EazyTrade-API", Version = "v1" });
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -41,7 +41,8 @@ builder.Services.AddCors(options =>
      {
          policy.WithOrigins(builder.Configuration["CorsPolicies:AllowedOrigin"]!) // Allow specific origin  
              .WithMethods("GET", "POST", "PUT", "DELETE")     // Allow specific methods  
-             .WithHeaders("Content-Type", "Authorization"); // Allow specific headers  
+             .WithHeaders("Content-Type", "Authorization") // Allow specific headers  
+             .AllowCredentials(); // Allow cookies to be sent
      }
      );
  });
@@ -68,6 +69,15 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true
+    };
+    // to read JWT attach in cookie via request
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            context.Token = context.Request.Cookies["token"];
+            return Task.CompletedTask;
+        }
     };
 });
 builder.Services.AddAuthorization();

@@ -9,9 +9,11 @@ namespace EazyTrade.Controller
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationService _service;
-        public AuthenticationController(IAuthenticationService service)
+        private readonly IConfiguration _config;
+        public AuthenticationController(IAuthenticationService service, IConfiguration config)
         {
             _service = service;
+            _config = config;
         }
 
         [AllowAnonymous]
@@ -21,11 +23,22 @@ namespace EazyTrade.Controller
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _service.Login(request);
+            var (result, token) = await _service.Login(request);
             if (result == null)
             {
                 return Unauthorized();
             }
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // HTTPS only
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddMinutes(Convert.ToDouble(_config["JwtConfig:DurationInMinutes"]))
+            };
+
+            Response.Cookies.Append("token", token, cookieOptions);
+
             return Ok(result);
         }
 
