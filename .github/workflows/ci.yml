@@ -1,4 +1,4 @@
-name: .Net continuous integration
+name: Continuous Integration
 
 on:
   pull_request:
