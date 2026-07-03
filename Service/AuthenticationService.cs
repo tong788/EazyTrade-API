@@ -22,19 +22,31 @@ namespace EazyTrade.Service
         }
 
 
-        public async Task<string?> Login(LoginRequestDto request)
+        public async Task<(LoginResponseDto, string)> Login(LoginRequestDto request)
         {
             var account = await _repository.GetByUsernameAsync(request.Username);
             if (account == null)
             {
-                return null;
+                return (null!, null!);
             }
+
             if (request.Password != account.Password || request.Username != account.Username)
             {
                 throw new UnauthorizedAccessException("The username or password is not correct.");
             }
             var token = await GenerateToken(account);
-            return token;
+
+            var response = new LoginResponseDto
+            {
+                Username = account.Username,
+                Firstname = account.Firstname,
+                Lastname = account.Lastname,
+                Email = account.Email,
+                role = account.Role.Name,
+                ImageUrl = "", // to be continued
+            };
+
+            return (response, token);
         }
 
         public async Task<AccountDto> Register(RegisterRequestDto request)
