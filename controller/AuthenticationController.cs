@@ -44,7 +44,7 @@ namespace EazyTrade.Controller
 
         [AllowAnonymous]
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(RegisterRequestDto request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

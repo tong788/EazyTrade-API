@@ -14,11 +14,13 @@ namespace EazyTrade.Service
     {
         private readonly IConfiguration _config;
         private readonly IAccountRepository _repository;
+        private readonly IRoleRepository _roleRepository;
 
-        public AuthenticationService(IConfiguration config, IAccountRepository repository)
+        public AuthenticationService(IConfiguration config, IAccountRepository repository, IRoleRepository roleRepository)
         {
             _config = config;
             _repository = repository;
+            _roleRepository = roleRepository;
         }
 
 
@@ -52,6 +54,14 @@ namespace EazyTrade.Service
         public async Task<AccountDto> Register(RegisterRequestDto request)
         {
             var mappedDto = request.Adapt<Account>();
+            var roles = await _roleRepository.GetAllAsync();
+            foreach (Role role in roles)
+            {
+                if (role.Name == request.RoleName)
+                {
+                    mappedDto.RoleId = role.Id;
+                }
+            }
             var account = await _repository.CreateAsync(mappedDto);
             var accountDto = account.Adapt<AccountDto>();
             return accountDto;
