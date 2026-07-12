@@ -43,6 +43,10 @@ namespace EazyTrade.Utility.Mapper
             TypeAdapterConfig<RoleForManipulationDto, Role>.NewConfig()
                 .Map(dest => dest.CreateAt, src => DateTime.UtcNow)
                 .Map(dest => dest.UpdateAt, src => DateTime.UtcNow);
+
+            // Register request map to Account entity
+            TypeAdapterConfig<RegisterRequestDto, Account>.NewConfig()
+                .Ignore(dest => dest.Role);
         }
     }
 }
