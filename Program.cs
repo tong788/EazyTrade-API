@@ -75,7 +75,7 @@ builder.Services.AddAuthentication(options =>
     {
         OnMessageReceived = context =>
         {
-            context.Token = context.Request.Cookies["token"];
+            context.Token = context.Request.Cookies["EazyTradeToken"];
             return Task.CompletedTask;
         }
     };

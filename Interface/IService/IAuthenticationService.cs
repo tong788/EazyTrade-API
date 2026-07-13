@@ -6,5 +6,6 @@ namespace EazyTrade.Interface.Service
     {
         public Task<(LoginResponseDto, string)> Login(LoginRequestDto request);
         public Task<AccountDto> Register(RegisterRequestDto request);
+        public Task<LoginResponseDto> GetMe(int id);
     }
 }

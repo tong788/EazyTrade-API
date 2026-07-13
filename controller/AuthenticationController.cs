@@ -16,6 +16,28 @@ namespace EazyTrade.Controller
             _config = config;
         }
 
+        [Authorize] // <-- require valid cookie that store access token
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMe()
+        {
+            // extract Id from claim
+            var accountIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(accountIdClaim))
+            {
+                return Unauthorized("Invalid user session");
+            }
+
+            // parse to int
+            if (!int.TryParse(accountIdClaim, out int accountId))
+            {
+                return BadRequest("Invalid user ID format in session token.");
+            }
+
+            var result = await _service.GetMe(accountId);
+            return Ok(result);
+        }
+
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
@@ -37,7 +59,7 @@ namespace EazyTrade.Controller
                 Expires = DateTimeOffset.UtcNow.AddMinutes(Convert.ToDouble(_config["JwtConfig:DurationInMinutes"]))
             };
 
-            Response.Cookies.Append("token", token, cookieOptions);
+            Response.Cookies.Append("EazyTradeToken", token, cookieOptions);
 
             return Ok(result);
         }
