@@ -67,9 +67,32 @@ namespace EazyTrade.Service
             return accountDto;
         }
 
+        public async Task<LoginResponseDto> GetMe(int id)
+        {
+            var account = await _repository.GetByIdAsync(id);
+
+            if (account == null)
+            {
+                return (null!);
+            }
+
+            var response = new LoginResponseDto
+            {
+                Username = account.Username,
+                Firstname = account.Firstname,
+                Lastname = account.Lastname,
+                Email = account.Email,
+                role = account.Role.Name,
+                ImageUrl = "", // to be continued
+            };
+
+            return response;
+        }
+
         private async Task<string> GenerateToken(Account account)
         {
             var claims = new List<Claim>{
+                {new Claim(ClaimTypes.NameIdentifier, account.Id.ToString())},
                 {new Claim(ClaimTypes.Name, account.Username)},
                 {new Claim(ClaimTypes.Role, account.Role.Name)}
             };

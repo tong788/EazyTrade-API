@@ -11,6 +11,13 @@ namespace EazyTrade.Repository
         public AccountRepository(ApplicationDBContext context) : base(context)
         {
         }
+        public override async Task<Account?> GetByIdAsync(int id)
+        {
+            return await _context.Accounts
+                .Include(a => a.Role)
+                .FirstOrDefaultAsync(a => a.Id == id);
+        }
+
         public async Task<Account?> GetByUsernameAsync(string username)
         {
             var entity = await _context.Accounts
