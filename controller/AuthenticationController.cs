@@ -2,6 +2,7 @@ using EazyTrade.Interface.Service;
 using EazyTrade.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace EazyTrade.Controller
 {
@@ -74,6 +75,20 @@ namespace EazyTrade.Controller
             var result = await _service.Register(request);
 
             return Ok(result);
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            Response.Cookies.Delete("EazyTradeToken", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict
+            });
+
+            return NoContent();
         }
     }
 }
