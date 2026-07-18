@@ -5,6 +5,8 @@ services:
     build:
       context: ../EazyTrade-Frontend
       dockerfile: Dockerfile
+      args:
+        - API_URL=http://localhost:5000
     image: eazytrade-frontend
     container_name: eazytrade-frontend
     ports:
