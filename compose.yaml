@@ -1,6 +1,14 @@
-name: eazytrade-api
+name: eazytrade
 
 services:
+  frontend:
+    build:
+      context: ../EazyTrade-Frontend
+      dockerfile: Dockerfile
+    image: eazytrade-frontend
+    container_name: eazytrade-frontend
+    ports:
+      - "3000:3000"
   backend:
     build: .
     image: eazytrade-backend
